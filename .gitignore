@@ -1,0 +1,13 @@
+Packages/*
+xcuserdata/*
+DerivedData/*
+Documents/*
+
+db.sqlite
+
+.build
+.swiftpm
+.DS_Store
+
+*.sh
+*.xcodeproj
