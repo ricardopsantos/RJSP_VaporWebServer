@@ -1,24 +1,5 @@
 import Vapor
 
-import Fluent
-import FluentPostgresDriver
-import FluentMySQLDriver
-
-struct AutenticationModel: Content {
-  let user: String
-  let password: String
-}
-
-struct Hello: Content {
-    var name: String?
-}
-
-// https://docs.vapor.codes/4.0/routing/
-
-func returnWith(_ some: Any) -> String {
-    return "\(some)"
-}
-
 func routes(_ app: Application) throws {
     
     //
@@ -27,7 +8,7 @@ func routes(_ app: Application) throws {
     //
     app.get { req -> String in
         req.log(app)
-        return returnWith("Hello stranger!\n\nChoose wishly:\n* https://www.linkedin.com/in/ricardopsantos\n* https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+        return "Hello stranger!\n\nChoose wishly:\n* https://www.linkedin.com/in/ricardopsantos\n* https://www.youtube.com/watch?v=dQw4w9WgXcQ"
     }
     
     //
@@ -37,7 +18,7 @@ func routes(_ app: Application) throws {
     app.get("version") { req -> String in
         req.log(app)
         let version = "Version 1.0.0"
-        return returnWith("\(version)\n\n\(app.environment)")
+        return "\(version)\n\n\(app.environment)"
     }
     
     //
@@ -84,7 +65,7 @@ func routes(_ app: Application) throws {
     //
     app.get("hello", "ricardo") { req -> String in
         req.log(app)
-        return returnWith("Hello boss!")
+        return "Hello boss!"
     }
     
     //
@@ -94,7 +75,7 @@ func routes(_ app: Application) throws {
     app.get("hello", ":someParam") { req -> String in
         req.log(app)
         guard let name = req.parameters.get("someParam") else { throw Abort(.internalServerError) }
-        return returnWith("Hello \(name)")
+        return "Hello \(name)"
     }
     
     //
@@ -105,21 +86,26 @@ func routes(_ app: Application) throws {
         req.log(app)
         let data = try req.content.decode(AutenticationModel.self)
         if data.password == "1" && data.user.lowercased() == "Ricardo".lowercased() {
-            return  returnWith("Hello \(data.user)")
+            return  "Hello \(data.user)"
         } else {
-            return  returnWith("Go away \(req)")
-        }
-    }
-    
-    app.post("login") { req -> String in
-        req.log(app)
-        let data = try req.content.decode(AutenticationModel.self)
-        if data.password == "1" && data.user.lowercased() == "Ricardo".lowercased() {
-            return  returnWith("Hello \(data.user)")
-        } else {
-            return  returnWith("Go away \(req)")
+            return "Go away \(req)"
         }
     }
     
 
 }
+
+
+
+
+
+struct AutenticationModel: Content {
+  let user: String
+  let password: String
+}
+
+struct Hello: Content {
+    var name: String?
+}
+
+// https://docs.vapor.codes/4.0/routing/
