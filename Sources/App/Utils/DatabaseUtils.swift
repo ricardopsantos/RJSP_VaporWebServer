@@ -5,7 +5,11 @@ import PostgresKit
 import Fluent
 import FluentPostgresDriver
 
-public extension DatabaseManager {
+public struct DatabaseUtils {
+    private init() { }
+}
+
+public extension DatabaseUtils {
     
     struct Querying {
         private init() { }
@@ -42,7 +46,29 @@ public extension DatabaseManager {
                 callback(nil)
             }
         }
+    }
+    
+}
+
+public extension DatabaseUtils {
+    
+    struct BasicOperations {
+        private init() { }
         
+        //
+        //
+        //
+        static func getRecord<T:Model>(_ record:T.Type, id :T.IDValue, using db: Database) -> EventLoopFuture<T> {
+            return T.find(id, on: db).unwrap(or: Abort(.notFound)).map{ $0 }
+        }
+        
+        //
+        //
+        //
+        static func deleteRecord<T:Model>(_ record:T.Type, id :T.IDValue, using db: Database) -> EventLoopFuture<Void> {
+            return getRecord(record, id: id, using: db).flatMap { $0.delete(on: db) }
+        }
+
         //
         //
         //
@@ -60,7 +86,7 @@ public extension DatabaseManager {
         //
         //
         //
-        static func allRecords<T>(from:T.Type, using db: Database) -> EventLoopFuture<[T]> where T: Model {
+        static func allRecords<T: Model>(from:T.Type, using db: Database) -> EventLoopFuture<[T]> {
             from.query(on: db).all()
         }
           

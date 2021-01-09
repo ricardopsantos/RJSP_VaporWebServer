@@ -1,7 +1,6 @@
 import Fluent
 import Vapor
 
-
 final class TodoDBModel: Model, Content, Routable {
     static let schema = "todos"
     static var initialPath: String { "todos" }

@@ -31,9 +31,6 @@ extension DatabaseID {
 // https://docs.vapor.codes/4.0/fluent/query/
 //
 
-
-
-
 public class DatabaseManager {
     private init() { }
     private static var dbReady: Bool = false
@@ -68,10 +65,10 @@ public extension DatabaseManager {
             let test1Result = try KeyValueDBModel.query(on: app.db).all().wait()
             LogsManager.log(message: "DB connection: test1Result - sucess \(test1Result)", app: app)
             
-            let test2Result = DatabaseManager.Querying.execute(query: "SELECT * FROM \(KeyValueDBModel.schema)", on: app.db)
+            let test2Result = DatabaseUtils.Querying.execute(query: "SELECT * FROM \(KeyValueDBModel.schema)", on: app.db)
             LogsManager.log(message: "DB connection: test2Result - sucess \(String(describing: test2Result))", app: app)
             
-            DatabaseManager.Querying.execute(query: "SELECT * FROM \(KeyValueDBModel.schema)", on: app.db) { [weak app] (test3Result) in
+            DatabaseUtils.Querying.execute(query: "SELECT * FROM \(KeyValueDBModel.schema)", on: app.db) { [weak app] (test3Result) in
                 if let test3Result = test3Result {
                     LogsManager.log(message: "DB connection: test3Result - sucess \(test3Result)", app: app)
                 } else {

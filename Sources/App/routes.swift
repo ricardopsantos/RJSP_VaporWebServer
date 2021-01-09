@@ -31,8 +31,8 @@ func routes(_ app: Application) throws {
             LogsManager.log(message: "DB not ready", app: app)
             throw Abort(.internalServerError)
         }
-        let response1 = DatabaseManager.Querying.allRecords(from: KeyValueDBModel.self, using: req.db)
-        let response2 = DatabaseManager.Querying.allRecords(from: KeyValueDBModel.self, using: app.db)
+        let response1 = DatabaseUtils.BasicOperations.allRecords(from: KeyValueDBModel.self, using: req.db)
+        let response2 = DatabaseUtils.BasicOperations.allRecords(from: KeyValueDBModel.self, using: app.db)
         return Bool.random() ? response1 : response2 // Booth work
     }
     
@@ -42,7 +42,7 @@ func routes(_ app: Application) throws {
     app.get("configuration", "add") { req -> EventLoopFuture<KeyValueDBModel> in
         req.log(app)
         let record = KeyValueDBModel(key: "aKey_\(Date())", encoding: "1", value: "value")
-        return DatabaseManager.Querying.createRecord(record, using: req.db)
+        return DatabaseUtils.BasicOperations.createRecord(record, using: req.db)
     }
     
     //
@@ -54,8 +54,8 @@ func routes(_ app: Application) throws {
             LogsManager.log(message: "DB not ready", app: app)
             throw Abort(.internalServerError)
         }
-        let response1 = DatabaseManager.Querying.allRecords(from: LogsDBModel.self, using: req.db)
-        let response2 = DatabaseManager.Querying.allRecords(from: LogsDBModel.self, using: app.db)
+        let response1 = DatabaseUtils.BasicOperations.allRecords(from: LogsDBModel.self, using: req.db)
+        let response2 = DatabaseUtils.BasicOperations.allRecords(from: LogsDBModel.self, using: app.db)
         return Bool.random() ? response1 : response2 // Booth work
     }
     
@@ -92,8 +92,9 @@ func routes(_ app: Application) throws {
         }
     }
     
-    try app.register(collection: TodoController())
-    
+    //try app.register(collection: TodoController())
+    //try app.register(collection: TestController<LogsDBModel>())
+    try app.register(collection: GenericController<TodoDBModel>())
 
 }
 
