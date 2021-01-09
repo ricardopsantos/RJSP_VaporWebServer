@@ -13,8 +13,8 @@ let serverTargetDependency: Target.Dependency = .product(name: "Vapor", package:
 let fluentDependency: Target.Dependency = .product(name: "Fluent", package: "fluent")
 let postgresDependency: Target.Dependency = .product(name: "FluentPostgresDriver", package: "fluent-postgres-driver")
 let mysqlDependency: Target.Dependency = .product(name: "FluentMySQLDriver", package: "fluent-mysql-driver")
-let rjsLibUFBaseDependency: Target.Dependency = .product(name: "RJSLibUFBase", package: "rjps-lib-uf")
-let rjsLibUFStorageDependency: Target.Dependency = .product(name: "RJSLibUFStorage", package: "rjps-lib-uf")
+//let rjsLibUFBaseDependency: Target.Dependency = .product(name: "RJSLibUFBase", package: "rjps-lib-uf")
+//let rjsLibUFStorageDependency: Target.Dependency = .product(name: "RJSLibUFStorage", package: "rjps-lib-uf")
 
 //
 // ####### Dependencies end
