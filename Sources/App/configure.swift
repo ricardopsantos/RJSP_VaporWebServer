@@ -20,8 +20,8 @@ public func configure(_ app: Application) throws {
   
     DatabaseManager.setup(app: app)
         
-    TodoMigration.setup(on: app.db)
-    app.migrations.add(TodoMigration())
+    DBMigration.setup(on: app.db)
+    app.migrations.add(DBMigration())
 
     try routes(app)
     

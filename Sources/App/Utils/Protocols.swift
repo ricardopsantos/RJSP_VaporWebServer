@@ -1,12 +1,17 @@
 
 import Foundation
 import Vapor
+import Fluent
 
-protocol Routable {
+protocol DataBaseSchemable {
+    static func createTable(on database: Database) -> EventLoopFuture<Void>
+}
+
+protocol RoutablePathProtocol {
     static var initialPath: String { get }
     static var path: PathComponent { get }
 }
 
-extension Routable {
+extension RoutablePathProtocol {
     static var path: PathComponent { return PathComponent(stringLiteral: initialPath) }
 }

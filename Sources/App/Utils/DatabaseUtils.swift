@@ -14,6 +14,17 @@ public extension DatabaseUtils {
     struct Querying {
         private init() { }
         
+        static func dbInfo(database: Database) -> String {
+            let query = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"
+            let result = execute(query: query, on: database)
+            var tableNames = "Tables: "
+            result?.rows.forEach({ (row) in
+                if let tableName = row.column("table_name")?.string {
+                    tableNames = "\(tableNames)\(tableName), "
+                }
+            })
+            return tableNames
+        }
         //
         //
         //

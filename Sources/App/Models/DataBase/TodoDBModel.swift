@@ -1,9 +1,8 @@
 import Fluent
 import Vapor
 
-final class TodoDBModel: Model, Content, Routable {
+final class TodoDBModel: Model, Content {
     static let schema = "todos"
-    static var initialPath: String { "todos" }
 
     @ID(key: .id)
     var id: UUID?
@@ -19,3 +18,23 @@ final class TodoDBModel: Model, Content, Routable {
     }
 }
 
+//
+// RoutablePathProtocol
+//
+
+extension TodoDBModel: RoutablePathProtocol {
+    static var initialPath: String { "todos" }
+}
+
+//
+// DataBaseSchemable
+//
+
+extension TodoDBModel: DataBaseSchemable {
+    static func createTable(on database: Database) -> EventLoopFuture<Void> {
+        return database.schema(Self.schema)
+            .id()
+            .field("title", .string, .required)
+            .create()
+    }
+}

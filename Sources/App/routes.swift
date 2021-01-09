@@ -92,15 +92,26 @@ func routes(_ app: Application) throws {
         }
     }
     
-    //try app.register(collection: TodoController())
-    //try app.register(collection: TestController<LogsDBModel>())
-    try app.register(collection: GenericController<TodoDBModel>())
+    //
+    let collection_Config = GenericController<KeyValueDBModel>()
+    collection_Config.validOperations = [.get]
+    try app.register(collection: collection_Config)
+
+    //
+    let collection_Logs = GenericController<LogsDBModel>()
+    collection_Logs.validOperations = [.add, .get]
+    try app.register(collection: collection_Logs)
+
+    let collection_Todo = GenericController<TodoDBModel>()
+    collection_Todo.validOperations = [.all]
+    
+    if Bool.random() {
+        try app.register(collection: collection_Todo)
+    } else {
+        try app.register(collection: TodoController())
+    }
 
 }
-
-
-
-
 
 struct AutenticationModel: Content {
   let user: String
