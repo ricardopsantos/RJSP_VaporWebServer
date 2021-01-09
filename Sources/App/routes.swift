@@ -25,37 +25,37 @@ func routes(_ app: Application) throws {
     // SERVER_PATH:PORT/configuration
     // (GET: Server Configuration for clients)
     //
-    app.get("configuration") { req -> EventLoopFuture<[DBKeyValue]> in
+    app.get("configuration") { req -> EventLoopFuture<[KeyValueDBModel]> in
         req.log(app)
         guard DatabaseManager.ready else {
             LogsManager.log(message: "DB not ready", app: app)
             throw Abort(.internalServerError)
         }
-        let response1 = DatabaseManager.Querying.allRecords(from: DBKeyValue.self, using: req.db)
-        let response2 = DatabaseManager.Querying.allRecords(from: DBKeyValue.self, using: app.db)
+        let response1 = DatabaseManager.Querying.allRecords(from: KeyValueDBModel.self, using: req.db)
+        let response2 = DatabaseManager.Querying.allRecords(from: KeyValueDBModel.self, using: app.db)
         return Bool.random() ? response1 : response2 // Booth work
     }
     
     //
     // SERVER_PATH:PORT/configuration/add
     //
-    app.get("configuration", "add") { req -> EventLoopFuture<DBKeyValue> in
+    app.get("configuration", "add") { req -> EventLoopFuture<KeyValueDBModel> in
         req.log(app)
-        let record = DBKeyValue(key: "aKey_\(Date())", encoding: "1", value: "value")
-        return DatabaseManager.Querying.addRecord(record, using: req.db)
+        let record = KeyValueDBModel(key: "aKey_\(Date())", encoding: "1", value: "value")
+        return DatabaseManager.Querying.createRecord(record, using: req.db)
     }
     
     //
     // SERVER_PATH:PORT/logs
     //
-    app.get("logs") { req -> EventLoopFuture<[DBLogs]> in
+    app.get("logs") { req -> EventLoopFuture<[LogsDBModel]> in
         req.log(app)
         guard DatabaseManager.ready else {
             LogsManager.log(message: "DB not ready", app: app)
             throw Abort(.internalServerError)
         }
-        let response1 = DatabaseManager.Querying.allRecords(from: DBLogs.self, using: req.db)
-        let response2 = DatabaseManager.Querying.allRecords(from: DBLogs.self, using: app.db)
+        let response1 = DatabaseManager.Querying.allRecords(from: LogsDBModel.self, using: req.db)
+        let response2 = DatabaseManager.Querying.allRecords(from: LogsDBModel.self, using: app.db)
         return Bool.random() ? response1 : response2 // Booth work
     }
     
@@ -91,6 +91,8 @@ func routes(_ app: Application) throws {
             return "Go away \(req)"
         }
     }
+    
+    try app.register(collection: TodoController())
     
 
 }

@@ -65,13 +65,13 @@ public extension DatabaseManager {
     static func doTest(app: Application) {
         guard dbReady else { return }
         do {
-            let test1Result = try DBKeyValue.query(on: app.db).all().wait()
+            let test1Result = try KeyValueDBModel.query(on: app.db).all().wait()
             LogsManager.log(message: "DB connection: test1Result - sucess \(test1Result)", app: app)
             
-            let test2Result = DatabaseManager.Querying.execute(query: "SELECT * FROM \(DBKeyValue.schema)", on: app.db)
+            let test2Result = DatabaseManager.Querying.execute(query: "SELECT * FROM \(KeyValueDBModel.schema)", on: app.db)
             LogsManager.log(message: "DB connection: test2Result - sucess \(String(describing: test2Result))", app: app)
             
-            DatabaseManager.Querying.execute(query: "SELECT * FROM \(DBKeyValue.schema)", on: app.db) { [weak app] (test3Result) in
+            DatabaseManager.Querying.execute(query: "SELECT * FROM \(KeyValueDBModel.schema)", on: app.db) { [weak app] (test3Result) in
                 if let test3Result = test3Result {
                     LogsManager.log(message: "DB connection: test3Result - sucess \(test3Result)", app: app)
                 } else {
@@ -82,62 +82,5 @@ public extension DatabaseManager {
         } catch {
             LogsManager.log(error: "Fail connection DB [\(error)]", app: app)
         }
-    }
-}
-
-// MARK: - public
-
-public extension DatabaseManager {
-    
-    struct Querying {
-        private init() { }
-        
-        //
-        //
-        //
-        static func execute(query: String, on db: Database) -> PostgresQueryResult? {
-            func execute(query: String, postgresDatabase: PostgresDatabase) -> PostgresQueryResult? {
-                do {
-                    return try postgresDatabase.query(query).wait()
-                } catch let error as DatabaseError where error.isSyntaxError {
-                    LogsManager.log(error:"\(DatabaseManager.self) error: \(error)", app: nil)
-                    return nil
-                } catch {
-                    LogsManager.log(error:"\(DatabaseManager.self) error: \(error)", app: nil)
-                    return nil
-                }
-            }
-            
-            if let postgresDatabase = db as? PostgresDatabase {
-                return execute(query: query, postgresDatabase: postgresDatabase)
-            }
-            return nil
-        }
-        
-        //
-        //
-        //
-        static func execute(query: String, on db: Database, callback: @escaping (PostgresQueryResult?) -> Void) {
-            if let postgresDatabase = db as? PostgresDatabase {
-                postgresDatabase.query(query).whenSuccess({ (result) in callback(result) })
-            } else {
-                callback(nil)
-            }
-        }
-        
-        //
-        //
-        //
-        static func addRecord<T:Model>(_ record:T, using db: Database) -> EventLoopFuture<T> {
-            record.create(on: db).map { record }
-        }
-        
-        //
-        //
-        //
-        static func allRecords<T>(from:T.Type, using db: Database) -> EventLoopFuture<[T]> where T: Model {
-            from.query(on: db).all()
-        }
-          
     }
 }

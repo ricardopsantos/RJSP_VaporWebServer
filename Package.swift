@@ -8,7 +8,7 @@ let swiftSettings: SwiftSetting = .unsafeFlags(["-cross-module-optimization"], .
 let serverTargetDependency: Target.Dependency = .product(name: "Vapor", package: "vapor")
 
 //
-// ####### Dependencies init
+// ####### Dependencies insit
 //
 let fluentDependency: Target.Dependency = .product(name: "Fluent", package: "fluent")
 let postgresDependency: Target.Dependency = .product(name: "FluentPostgresDriver", package: "fluent-postgres-driver")
@@ -33,7 +33,7 @@ let package = Package(
         .package(url: "https://github.com/vapor/fluent.git", from: "4.0.0"),
         .package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.0.0"),
         .package(url: "https://github.com/vapor/fluent-mysql-driver.git", from: "4.0.0"),
-        .package(name: "rjps-lib-uf", url: "https://github.com/ricardopsantos/RJSLibUF", from: "1.0.0")
+        .package(name: "rjps-lib-uf", url: "https://github.com/ricardopsantos/RJSLibUF", from: "1.0.1")
     ],
     targets: [
         .target(name: appName, dependencies: dependencies, swiftSettings: [swiftSettings]),

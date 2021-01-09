@@ -8,6 +8,7 @@ import FluentMySQLDriver
 public func configure(_ app: Application) throws {
 
     app.routes.caseInsensitive = true
+    app.routes.defaultMaxBodySize = "500kb"  // Increases the streaming body collection limit to 500kb
     
     switch app.environment {
     case .production: app.http.server.configuration.port = 8080
@@ -19,6 +20,9 @@ public func configure(_ app: Application) throws {
   
     DatabaseManager.setup(app: app)
         
+    TodoMigration.setup(on: app.db)
+    app.migrations.add(TodoMigration())
+
     try routes(app)
     
     LogsManager.log(message: "Routes : \(app.routes.all)", app: app)

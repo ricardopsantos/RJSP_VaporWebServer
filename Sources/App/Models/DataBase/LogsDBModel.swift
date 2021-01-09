@@ -4,11 +4,12 @@ import Fluent
 import FluentPostgresDriver
 import FluentMySQLDriver
 
-public final class DBLogs: Model, Content {
+public final class LogsDBModel: Model, Content, Routable {
     
     public static let schema = "app_messages"
+    public static var initialPath: String { "messages" }
 
-    @ID(custom: "id")
+    @ID(key: .id)
     public var id: String?
 
     @Field(key: "message")
@@ -33,34 +34,5 @@ public final class DBLogs: Model, Content {
         self.messageType = ""
         self.signature = ""
         self.recordDate = Date()
-    }
-}
-
-public final class DBKeyValue: Model, Content {
-    
-    public static let schema = "key_values"
-
-    @ID(custom: "key")
-    public var id: String?
-
-    @Field(key: "key")
-    var key: String
-
-    @Field(key: "value")
-    var value: String
-
-    @Field(key: "encoding")
-    var encoding: String
-    
-    public init() {
-        self.encoding = ""
-        self.key = ""
-        self.value = ""
-    }
-    
-    public init(key: String = "", encoding: String = "", value: String = "") {
-        self.encoding = encoding
-        self.key = key
-        self.value = value
     }
 }
