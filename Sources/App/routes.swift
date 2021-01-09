@@ -21,6 +21,7 @@ func routes(_ app: Application) throws {
         return "\(version)\n\n\(app.environment)"
     }
     
+    /*
     //
     // SERVER_PATH:PORT/configuration
     // (GET: Server Configuration for clients)
@@ -91,7 +92,7 @@ func routes(_ app: Application) throws {
             return "Go away \(req)"
         }
     }
-    
+    */
     //
     let collection_Config = GenericController<KeyValueDBModel>()
     collection_Config.validOperations = [.get]
@@ -104,12 +105,8 @@ func routes(_ app: Application) throws {
 
     let collection_Todo = GenericController<TodoDBModel>()
     collection_Todo.validOperations = [.all]
-    
-    if Bool.random() {
-        try app.register(collection: collection_Todo)
-    } else {
-        try app.register(collection: TodoController())
-    }
+    try app.register(collection: collection_Todo)
+
 
 }
 

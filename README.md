@@ -1,111 +1,54 @@
-# RJSP_HerokuApp1
+## About
 
---
+This is quick start web server built using [Vapor](https://vapor.codes/) and is how [this](https://ricardojpsantos.medium.com/deploying-a-vapor-swift-web-app-into-heroku-cloud-platform-part-1-2-69de939ce4d8) started...
 
-# Heroku: 
+---
 
-## Server
+## Features
 
-[https://dashboard.heroku.com/apps/pacific-hollows-25711/activity](https://dashboard.heroku.com/apps/pacific-hollows-25711/activity)
+Using [Swift generics](https://docs.swift.org/swift-book/LanguageGuide/Generics.html) this routing funtion...
 
-## Server management
+```swift
+func routes(_ app: Application) throws {
+    
+    app.get { req -> String in
+        req.log(app)
+        return "Hello stranger!\n\nChoose wishly:\n* https://www.linkedin.com/in/ricardopsantos\n* https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    }
+    
+    app.get("version") { req -> String in
+        req.log(app)
+        let version = "Version 1.0.0"
+        return "\(version)\n\n\(app.environment)"
+    }
+       
+    let collection_Config = GenericController<KeyValueDBModel>()
+    collection_Config.validOperations = [.get]
+    try app.register(collection: collection_Config)
 
-__Heroku: Deploy__ Dont work with test target enabled)
+    let collection_Logs = GenericController<LogsDBModel>()
+    collection_Logs.validOperations = [.add, .get]
+    try app.register(collection: collection_Logs)
 
-Prepare
-
-```bash
-heroku plugins:install heroku-builds
-heroku builds:cancel -a pacific-hollows-25711
-heroku restart
-heroku builds
+    let collection_Todo = GenericController<TodoDBModel>()
+    collection_Todo.validOperations = [.all]
+    try app.register(collection: collection_Todo)
+}
 ```
+can handles all this routes
 
-Option 1
+* `GET` 
+* `GET /version`
 
+* `GET /config`
+* `GET /config/operations/:id`
 
-```bash
-git add .
-git commit -m 'changes'
-git push heroku master
-```
+* `GET /messages`
+* `POST /messages`
+* `GET /messages/operations/:id`
+* `DELETE /messages/operations/:id`
 
-Option 2
-
-```bash
-git add .
-git commit -m 'changes'
-vapor heroku push
-```
-
---
-
-__Fixing Error: Your account has reached its concurrent build limit__ [__(Source)__](https://stackoverflow.com/questions/47028871/heroku-your-account-has-reached-its-concurrent-build-limit)
-
-```bash
-heroku restart
-heroku plugins:install heroku-builds
-heroku builds:cancel -a pacific-hollows-25711
-```
-
---
-
-__See logs__
-
-https://coralogix.com/log-analytics-blog/heroku-logs-the-complete-guide/
-
-```bash
-heroku logs --tail
-heroku logs -tp router
-heroku logs --tail --source app
-heroku logs --tail --source app --dyno api
-heroku logs --tail --source heroku
-```
-
---
-
-__Generic informations__
-
-```bash
-heroku config
-heroku apps:info
-```
-
-__Kill (local) apps on port 5678__
-
-```
-kill $(lsof -t -i:5678)
-```
-
-## Test Cases
-
-
-https://pacific-hollows-25711.herokuapp.com
-
-http://127.0.0.1:8080
-
-https://pacific-hollows-25711.herokuapp.com/hello/maria
-
-https://pacific-hollows-25711.herokuapp.com/version
-
-```
-curl http://localhost:5678
-It
-```
-
-```
-curl http://localhost:5678
-curl https://pacific-hollows-25711.herokuapp.com
-
-curl http://localhost:5678/version
-curl https://pacific-hollows-25711.herokuapp.com/version
-
-curl http://localhost:5678/configuration
-curl https://pacific-hollows-25711.herokuapp.com/configuration
-```
-
-## Tutorials
-
-* [Vapor and Job Queues: Getting Started](https://www.raywenderlich.com/18510630-vapor-and-job-queues-getting-started)
-* [Vapor : Deply to Heroku](https://docs.vapor.codes/4.0/deploy/heroku)
-* [Vapor : Query](https://docs.vapor.codes/4.0/fluent/query)
+* `GET /todos`
+* `POST /todos`
+* `GET /todos/operations/:id`
+* `DELETE /todos/operations/:id`
