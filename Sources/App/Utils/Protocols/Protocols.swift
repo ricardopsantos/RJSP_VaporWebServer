@@ -3,7 +3,7 @@ import Foundation
 import Vapor
 import Fluent
 
-protocol DataBaseSchemable {
+protocol DataBaseSchemableProtocol {
     static func createTable(on database: Database) -> EventLoopFuture<Void>
 }
 

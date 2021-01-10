@@ -5,13 +5,13 @@ struct DBMigration: Migration {
     static func setup(on database: Database) {
         
         let dbInfo = DatabaseUtils.Querying.dbInfo(database: database)
-        LogsManager.log(message:"\(dbInfo)", app: nil)
+        DevTools.Logs.log(message:"\(dbInfo)", app: nil)
 
-        [TodoDBModel.self, LogsDBModel.self].forEach { some in
+        [TodoDBModel.self, LogsDBModel.self, UsersDBModel.self].forEach { some in
             do {
-                try (some as! DataBaseSchemable.Type).createTable(on: database).wait()
+                try (some as! DataBaseSchemableProtocol.Type).createTable(on: database).wait()
             } catch {
-                LogsManager.log(error: "\(some.self) [\(error)]", app: nil)
+                DevTools.Logs.log(error: "\(some.self) [\(error)]", app: nil)
             }
         }
         
@@ -20,15 +20,19 @@ struct DBMigration: Migration {
     func prepare(on database: Database) -> EventLoopFuture<Void> {
         let event1 = TodoDBModel.createTable(on: database)
         let event2 = LogsDBModel.createTable(on: database)
+        let event3 = UsersDBModel.createTable(on: database)
         return event1
             .flatMap { event2 }
+            .flatMap { event3 }
     }
 
     func revert(on database: Database) -> EventLoopFuture<Void> {
         let event1 = database.schema(TodoDBModel.schema).delete()
         let event2 = database.schema(LogsDBModel.schema).delete()
+        let event3 = database.schema(UsersDBModel.schema).delete()
         return event1
             .flatMap { event2 }
+            .flatMap { event3 }
     }
 }
 

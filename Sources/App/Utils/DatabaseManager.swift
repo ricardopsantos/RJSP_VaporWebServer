@@ -48,13 +48,13 @@ public extension DatabaseManager {
             dbReady = true
             DatabaseManager.doTest(app: app)
         } catch {
-            LogsManager.log(error: "\(DatabaseManager.self) [\(error)] [\(DatabaseID.DB1.connectionString)]", app: app)
+            DevTools.Logs.log(error: "\(DatabaseManager.self) [\(error)] [\(DatabaseID.DB1.connectionString)]", app: app)
         }
     }
     
     static func shutdownGracefully(_ app: Application? = nil) {
         guard dbReady else { return }
-        LogsManager.log(error: "\(DatabaseManager.self) will shutdown", app: app)
+        DevTools.Logs.log(error: "\(DatabaseManager.self) will shutdown", app: app)
         app?.databases.shutdown()
         dbReady = false
     }
@@ -63,21 +63,21 @@ public extension DatabaseManager {
         guard dbReady else { return }
         do {
             let test1Result = try KeyValueDBModel.query(on: app.db).all().wait()
-            LogsManager.log(message: "DB connection: test1Result - sucess \(test1Result)", app: app)
+            DevTools.Logs.log(message: "DB connection: test1Result - sucess \(test1Result)", app: app)
             
             let test2Result = DatabaseUtils.Querying.execute(query: "SELECT * FROM \(KeyValueDBModel.schema)", on: app.db)
-            LogsManager.log(message: "DB connection: test2Result - sucess \(String(describing: test2Result))", app: app)
+            DevTools.Logs.log(message: "DB connection: test2Result - sucess \(String(describing: test2Result))", app: app)
             
             DatabaseUtils.Querying.execute(query: "SELECT * FROM \(KeyValueDBModel.schema)", on: app.db) { [weak app] (test3Result) in
                 if let test3Result = test3Result {
-                    LogsManager.log(message: "DB connection: test3Result - sucess \(test3Result)", app: app)
+                    DevTools.Logs.log(message: "DB connection: test3Result - sucess \(test3Result)", app: app)
                 } else {
-                    LogsManager.log(message: "DB connection: test2Result - fail", app: app)
+                    DevTools.Logs.log(message: "DB connection: test2Result - fail", app: app)
                 }
             }
 
         } catch {
-            LogsManager.log(error: "Fail connection DB [\(error)]", app: app)
+            DevTools.Logs.log(error: "Fail connection DB [\(error)]", app: app)
         }
     }
 }

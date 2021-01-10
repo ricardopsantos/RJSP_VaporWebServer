@@ -45,7 +45,7 @@ extension KeyValueDBModel: RoutablePathProtocol {
 // DataBaseSchemable
 //
 
-extension KeyValueDBModel: DataBaseSchemable {
+extension KeyValueDBModel: DataBaseSchemableProtocol {
     static func createTable(on database: Database) -> EventLoopFuture<Void> {
         return database.schema(Self.schema)
             .id()

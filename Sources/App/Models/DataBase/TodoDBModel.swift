@@ -30,7 +30,7 @@ extension TodoDBModel: RoutablePathProtocol {
 // DataBaseSchemable
 //
 
-extension TodoDBModel: DataBaseSchemable {
+extension TodoDBModel: DataBaseSchemableProtocol {
     static func createTable(on database: Database) -> EventLoopFuture<Void> {
         return database.schema(Self.schema)
             .id()

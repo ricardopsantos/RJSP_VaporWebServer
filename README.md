@@ -1,6 +1,6 @@
 ## About
 
-This is quick start web server built using [Vapor](https://vapor.codes/) and is how [this](https://ricardojpsantos.medium.com/deploying-a-vapor-swift-web-app-into-heroku-cloud-platform-part-1-2-69de939ce4d8) started...
+This is quick start web server, built using [Vapor 4.0](https://vapor.codes/) and was how [this series of articles](https://ricardojpsantos.medium.com/deploying-a-vapor-swift-web-app-into-heroku-cloud-platform-part-1-2-69de939ce4d8) started...
 
 ---
 

@@ -22,9 +22,9 @@ public func configure(_ app: Application) throws {
         
     DBMigration.setup(on: app.db)
     app.migrations.add(DBMigration())
-
+    
     try routes(app)
     
-    LogsManager.log(message: "Routes : \(app.routes.all)", app: app)
-
+    DevTools.Logs.log(message: "Routes : \(app.routes.all)", app: app)
+    
 }

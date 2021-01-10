@@ -33,10 +33,10 @@ public extension DatabaseUtils {
                 do {
                     return try postgresDatabase.query(query).wait()
                 } catch let error as DatabaseError where error.isSyntaxError {
-                    LogsManager.log(error:"\(DatabaseManager.self) error: \(error)", app: nil)
+                    DevTools.Logs.log(error:"\(DatabaseManager.self) error: \(error)", app: nil)
                     return nil
                 } catch {
-                    LogsManager.log(error:"\(DatabaseManager.self) error: \(error)", app: nil)
+                    DevTools.Logs.log(error:"\(DatabaseManager.self) error: \(error)", app: nil)
                     return nil
                 }
             }
@@ -63,42 +63,60 @@ public extension DatabaseUtils {
 
 public extension DatabaseUtils {
     
-    struct BasicOperations {
+    struct CRUD {
         private init() { }
         
-        //
-        //
-        //
-        static func getRecord<T:Model>(_ record:T.Type, id :T.IDValue, using db: Database) -> EventLoopFuture<T> {
+        /// Get record with id
+        static func get<T:Model>(_ record:T.Type, id :T.IDValue, using db: Database) throws -> EventLoopFuture<T> {
+            guard DatabaseManager.ready else {
+                DevTools.Logs.log(message: "DB not ready", app: nil)
+                throw Abort(.internalServerError)
+            }
             return T.find(id, on: db).unwrap(or: Abort(.notFound)).map{ $0 }
         }
         
-        //
-        //
-        //
-        static func deleteRecord<T:Model>(_ record:T.Type, id :T.IDValue, using db: Database) -> EventLoopFuture<Void> {
-            return getRecord(record, id: id, using: db).flatMap { $0.delete(on: db) }
+        /// Delete record if exists
+        static func delete<T:Model>(_ record:T.Type, id :T.IDValue, using db: Database) throws -> EventLoopFuture<Void> {
+            guard DatabaseManager.ready else {
+                DevTools.Logs.log(message: "DB not ready", app: nil)
+                throw Abort(.internalServerError)
+            }
+            return try get(record, id: id, using: db).flatMap { $0.delete(on: db) }
         }
 
-        //
-        //
-        //
-        static func createRecord<T:Model>(_ record:T, using db: Database) -> EventLoopFuture<T> {
-            record.create(on: db).map { record }
+        /// Create new record
+        static func create<T:Model>(_ record:T, using db: Database) throws -> EventLoopFuture<T> {
+            guard DatabaseManager.ready else {
+                DevTools.Logs.log(message: "DB not ready", app: nil)
+                throw Abort(.internalServerError)
+            }
+            return record.create(on: db).map { record }
         }
         
-        //
-        //
-        //
-        static func saveRecord<T:Model>(_ record:T, using db: Database) -> EventLoopFuture<T> {
-            record.save(on: db).map { record }
+        /// Update (if exists), else create
+        static func save<T:Model>(_ record:T, using db: Database) throws -> EventLoopFuture<T> {
+            guard DatabaseManager.ready else {
+                DevTools.Logs.log(message: "DB not ready", app: nil)
+                throw Abort(.internalServerError)
+            }
+            return record.save(on: db).map { record }
         }
         
-        //
-        //
-        //
-        static func allRecords<T: Model>(from:T.Type, using db: Database) -> EventLoopFuture<[T]> {
-            from.query(on: db).all()
+        static func update<T:Model>(_ record:T, using db: Database) throws -> EventLoopFuture<T> {
+            guard DatabaseManager.ready else {
+                DevTools.Logs.log(message: "DB not ready", app: nil)
+                throw Abort(.internalServerError)
+            }
+            return record.update(on: db).map { record }
+        }
+        
+        /// Get all records
+        static func all<T: Model>(from:T.Type, using db: Database) throws -> EventLoopFuture<[T]> {
+            guard DatabaseManager.ready else {
+                DevTools.Logs.log(message: "DB not ready", app: nil)
+                throw Abort(.internalServerError)
+            }
+            return from.query(on: db).all()
         }
           
     }

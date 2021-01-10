@@ -28,7 +28,7 @@ public final class LogsDBModel: Model, Content {
     
     public init() {
         self.id = nil
-         self.message = ""
+        self.message = ""
         self.messageSender = ""
         self.messageType = ""
         self.signature = ""
@@ -48,7 +48,7 @@ extension LogsDBModel: RoutablePathProtocol {
 // DataBaseSchemable
 //
 
-extension LogsDBModel: DataBaseSchemable {
+extension LogsDBModel: DataBaseSchemableProtocol {
     static func createTable(on database: Database) -> EventLoopFuture<Void> {
         return database.schema(Self.schema)
             .id()

@@ -6,8 +6,13 @@ import Vapor
 import Foundation
 
 public extension Request {
+    
+    func valueForParamWith(id: String) -> String? {
+        return self.parameters.get(id)
+    }
+    
     var requesParamString: String? {
-        return self.parameters.get(Utils.Strings.pathConventionId)
+        return valueForParamWith(id: DevTools.Strings.pathConventionId)
     }
     
     var requesParamUUID: UUID? {
@@ -16,13 +21,6 @@ public extension Request {
     }
     
     func log(_ app: Application) {
-        LogsManager.log(message: "\(self)", app: app)
+        DevTools.Logs.log(message: "\(self)", app: app)
     }
 }
-
-public extension Environment {
-    static var staging: Environment {
-        .custom(name: "staging")
-    }
-}
-
