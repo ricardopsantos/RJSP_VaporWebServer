@@ -1,8 +1,7 @@
 import Vapor
-
+//
 import Fluent
 import FluentPostgresDriver
-import FluentMySQLDriver
 
 public final class LogsDBModel: Model, Content {
     
@@ -11,19 +10,19 @@ public final class LogsDBModel: Model, Content {
     @ID(key: .id)
     public var id: UUID?
 
-    @Field(key: "message")
+    @Field(key: Fields.message.fieldKey)
     var message: String
 
-    @Field(key: "sender")
+    @Field(key: Fields.sender.fieldKey)
     var messageSender: String
 
-    @Field(key: "message_type")
+    @Field(key: Fields.messageType.fieldKey)
     var messageType: String
     
-    @Field(key: "signature")
+    @Field(key: Fields.signature.fieldKey)
     var signature: String
     
-    @Field(key: "record_date")
+    @Field(key: Fields.recordDate.fieldKey)
     var recordDate: Date
     
     public init() {
@@ -40,8 +39,8 @@ public final class LogsDBModel: Model, Content {
 // RoutablePathProtocol
 //
 
-extension LogsDBModel: RoutablePathProtocol {
-    public static var initialPath: String { "messages" }
+extension LogsDBModel: RoutableCRUDPath {
+    public static var crudPath: String { "messages" }
 }
 
 //
@@ -49,14 +48,26 @@ extension LogsDBModel: RoutablePathProtocol {
 //
 
 extension LogsDBModel: DataBaseSchemableProtocol {
+    
+    enum Fields: String {
+        case message
+        case sender
+        case messageType = "message_type"
+        case signature
+        case recordDate = "record_date"
+
+        var fieldKey: FieldKey { return self.rawValue.fieldKey }
+    }
+    
     static func createTable(on database: Database) -> EventLoopFuture<Void> {
         return database.schema(Self.schema)
+            .ignoreExisting() // Ignore if table exists
             .id()
-            .field("message", .string, .required)
-            .field("sender", .string, .required)
-            .field("message_type", .string, .required)
-            .field("signature", .string, .required)
-            .field("record_date", .datetime, .required)
+            .field(Fields.message.fieldKey, .string, .required)
+            .field(Fields.sender.fieldKey, .string, .required)
+            .field(Fields.messageType.fieldKey, .string, .required)
+            .field(Fields.signature.fieldKey, .string, .required)
+            .field(Fields.recordDate.fieldKey, .datetime, .required)
             .create()
     }
 }

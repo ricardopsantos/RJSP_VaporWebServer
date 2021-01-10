@@ -7,11 +7,11 @@ protocol DataBaseSchemableProtocol {
     static func createTable(on database: Database) -> EventLoopFuture<Void>
 }
 
-protocol RoutablePathProtocol {
-    static var initialPath: String { get }
-    static var path: PathComponent { get }
+protocol RoutableCRUDPath {
+    static var crudPath: String { get }
+    static var pathComponent: PathComponent { get }
 }
 
-extension RoutablePathProtocol {
-    static var path: PathComponent { return PathComponent(stringLiteral: initialPath) }
+extension RoutableCRUDPath {
+    static var pathComponent: PathComponent { return PathComponent(stringLiteral: crudPath) }
 }

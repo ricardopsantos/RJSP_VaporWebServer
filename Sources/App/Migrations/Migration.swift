@@ -9,7 +9,11 @@ struct DBMigration: Migration {
 
         [TodoDBModel.self, LogsDBModel.self, UsersDBModel.self].forEach { some in
             do {
-                try (some as! DataBaseSchemableProtocol.Type).createTable(on: database).wait()
+                if let dataBaseSchemable = some as? DataBaseSchemableProtocol.Type {
+                    try dataBaseSchemable.createTable(on: database).wait()
+                } else {
+                    DevTools.Logs.log(error: "\(some.self) does not conform to \(DataBaseSchemableProtocol.self)", app: nil)
+                }
             } catch {
                 DevTools.Logs.log(error: "\(some.self) [\(error)]", app: nil)
             }

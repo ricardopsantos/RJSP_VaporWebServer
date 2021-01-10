@@ -7,17 +7,17 @@ final class UsersDBModel: Model, Content {
     @ID(key: .id)
     public var id: UUID?
     
-    @Field(key: "username")
+    @Field(key: Fields.username.fieldKey)
     var username: String
 
-    @Field(key: "password")
+    @Field(key: Fields.password.fieldKey)
     var password: String
     
-    @Field(key: "name")
+    @Field(key: Fields.name.fieldKey)
     var name: String?
     
     init() { }
-
+    
     init(username: String, password: String) {
         self.id = nil
         self.username = username
@@ -29,8 +29,8 @@ final class UsersDBModel: Model, Content {
 // RoutablePathProtocol
 //
 
-extension UsersDBModel: RoutablePathProtocol {
-    static var initialPath: String { "users" }
+extension UsersDBModel: RoutableCRUDPath {
+    static var crudPath: String { "users" }
 }
 
 //
@@ -38,12 +38,22 @@ extension UsersDBModel: RoutablePathProtocol {
 //
 
 extension UsersDBModel: DataBaseSchemableProtocol {
+    
+    enum Fields: String {
+        case username
+        case password
+        case name
+
+        var fieldKey: FieldKey { return self.rawValue.fieldKey }
+    }
+    
     static func createTable(on database: Database) -> EventLoopFuture<Void> {
         return database.schema(Self.schema)
+            .ignoreExisting() // Ignore if table exists
             .id()
-            .field("username", .string, .required)
-            .field("password", .string, .required)
-            .field("name", .string, .required)
+            .field(Fields.username.fieldKey, .string, .required)
+            .field(Fields.password.fieldKey, .string, .required)
+            .field(Fields.name.fieldKey, .string, .required)
             .create()
     }
 }

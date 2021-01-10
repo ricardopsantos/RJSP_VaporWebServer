@@ -1,7 +1,3 @@
-//
-//  Created by Ricardo Santos on 19/12/2020.
-//
-
 import Vapor
 import Foundation
 

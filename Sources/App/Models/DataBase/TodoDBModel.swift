@@ -7,7 +7,7 @@ final class TodoDBModel: Model, Content {
     @ID(key: .id)
     var id: UUID?
 
-    @Field(key: "title")
+    @Field(key: Fields.title.fieldKey)
     var title: String
 
     init() { }
@@ -22,8 +22,8 @@ final class TodoDBModel: Model, Content {
 // RoutablePathProtocol
 //
 
-extension TodoDBModel: RoutablePathProtocol {
-    static var initialPath: String { "todos" }
+extension TodoDBModel: RoutableCRUDPath {
+    static var crudPath: String { "todos" }
 }
 
 //
@@ -31,10 +31,18 @@ extension TodoDBModel: RoutablePathProtocol {
 //
 
 extension TodoDBModel: DataBaseSchemableProtocol {
+    
+    enum Fields: String {
+        case title
+
+        var fieldKey: FieldKey { return self.rawValue.fieldKey }
+    }
+    
     static func createTable(on database: Database) -> EventLoopFuture<Void> {
         return database.schema(Self.schema)
+            .ignoreExisting() // Ignore if table exists
             .id()
-            .field("title", .string, .required)
+            .field(Fields.title.fieldKey, .string, .required)
             .create()
     }
 }

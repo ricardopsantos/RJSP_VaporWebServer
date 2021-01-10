@@ -20,7 +20,7 @@ public extension DatabaseUtils {
             var tableNames = "Tables: "
             result?.rows.forEach({ (row) in
                 if let tableName = row.column("table_name")?.string {
-                    tableNames = "\(tableNames)\(tableName), "
+                    tableNames = "\(tableNames)[\(tableName)], "
                 }
             })
             return tableNames

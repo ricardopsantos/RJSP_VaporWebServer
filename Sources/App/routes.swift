@@ -21,6 +21,7 @@ func routes(_ app: Application) throws {
     //
     app.get("version") { req -> String in
         req.log(app)
+        guard req.isValid else { throw Abort(.unauthorized) }
         return "Version 1.0.1\n\(app.environment)"
     }
     
@@ -29,6 +30,7 @@ func routes(_ app: Application) throws {
     // GET: Server Configuration for clients
     //
     app.get("configuration") { req -> EventLoopFuture<[KeyValueDBModel]> in
+        guard req.isValid else { throw Abort(.unauthorized) }
         req.log(app)
         return try DatabaseUtils.CRUD.all(from: KeyValueDBModel.self, using: req.db)
     }
@@ -38,8 +40,9 @@ func routes(_ app: Application) throws {
     // GET: Sample route with request parameter
     //
     app.get("hello", ":\(DevTools.Strings.pathConventionParam)") { req -> String in
+        guard req.isValid else { throw Abort(.unauthorized) }
         req.log(app)
-        guard let name = req.valueForParamWith(id: DevTools.Strings.pathConventionParam) else { throw Abort(.internalServerError) }
+        guard let name = req.paramValueForFieldWith(DevTools.Strings.pathConventionParam) else { throw Abort(.internalServerError) }
         return "Hello \(name)"
     }
     
@@ -48,6 +51,7 @@ func routes(_ app: Application) throws {
     // (POST: Sample login)
     //
     app.post("login") { req -> EventLoopFuture<UsersDBModel> in
+        guard req.isValid else { throw Abort(.unauthorized) }
         req.log(app)
         let user = try req.content.decode(UsersDBModel.self)
         let storedUserMaybe = UsersDBModel.userWith(username: user.username, password: user.password, on: req.db)

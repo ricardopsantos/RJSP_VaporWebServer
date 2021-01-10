@@ -1,23 +1,22 @@
 import Vapor
-
+//
 import Fluent
 import FluentPostgresDriver
-import FluentMySQLDriver
 
 public final class KeyValueDBModel: Model, Content {
     
     public static let schema = "key_values"
 
-    @ID(custom: "key")
+    @ID(custom: Fields.key.fieldKey)
     public var id: String?
 
-    @Field(key: "key")
+    @Field(key: Fields.key.fieldKey)
     var key: String
 
-    @Field(key: "value")
+    @Field(key: Fields.value.fieldKey)
     var value: String
 
-    @Field(key: "encoding")
+    @Field(key: Fields.encoding.fieldKey)
     var encoding: String
     
     public init() {
@@ -37,8 +36,8 @@ public final class KeyValueDBModel: Model, Content {
 // RoutablePathProtocol
 //
 
-extension KeyValueDBModel: RoutablePathProtocol {
-    public static var initialPath: String { "config" }
+extension KeyValueDBModel: RoutableCRUDPath {
+    public static var crudPath: String { "config" }
 }
 
 //
@@ -46,12 +45,22 @@ extension KeyValueDBModel: RoutablePathProtocol {
 //
 
 extension KeyValueDBModel: DataBaseSchemableProtocol {
+    
+    enum Fields: String {
+        case key
+        case value
+        case encoding
+
+        var fieldKey: FieldKey { return self.rawValue.fieldKey }
+    }
+    
     static func createTable(on database: Database) -> EventLoopFuture<Void> {
         return database.schema(Self.schema)
+            .ignoreExisting() // Ignore if table exists
             .id()
-            .field("key", .string, .required)
-            .field("value", .string, .required)
-            .field("encoding", .string, .required)
+            .field(Fields.key.fieldKey, .string, .required)
+            .field(Fields.value.fieldKey, .string, .required)
+            .field(Fields.encoding.fieldKey, .string, .required)
             .create()
     }
 }

@@ -1,8 +1,6 @@
 import Vapor
-
 import Fluent
 import FluentPostgresDriver
-import FluentMySQLDriver
 
 // configures your application
 public func configure(_ app: Application) throws {
@@ -18,7 +16,7 @@ public func configure(_ app: Application) throws {
     default: _ = 1
     }
   
-    DatabaseManager.setup(app: app)
+    try? DatabaseManager.setup(app: app)
         
     DBMigration.setup(on: app.db)
     app.migrations.add(DBMigration())

@@ -41,10 +41,13 @@ public class DatabaseManager {
 
 public extension DatabaseManager {
         
-    static func setup(app: Application) {
+    static func setup(app: Application) throws {
         guard !dbReady else { return }
         do {
-            try app.databases.use(.postgres(url: DatabaseID.DB1.connectionString), as: DatabaseID.DB1.id)
+            guard let url = DatabaseID.DB1.connectionString else {
+                throw Abort(.unauthorized)
+            }
+            try app.databases.use(.postgres(url: url), as: DatabaseID.DB1.id)
             dbReady = true
             DatabaseManager.doTest(app: app)
         } catch {
