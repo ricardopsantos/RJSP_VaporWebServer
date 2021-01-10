@@ -101,15 +101,6 @@
         }
       },
       {
-        "package": "rjps-lib-uf",
-        "repositoryURL": "https://github.com/ricardopsantos/RJSLibUF",
-        "state": {
-          "branch": null,
-          "revision": "254a7b7f927b7bb8d14bc437c8849b93dcd8d0b9",
-          "version": "1.0.1"
-        }
-      },
-      {
         "package": "routing-kit",
         "repositoryURL": "https://github.com/vapor/routing-kit.git",
         "state": {
